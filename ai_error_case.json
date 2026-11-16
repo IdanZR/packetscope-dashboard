@@ -1,0 +1,33 @@
+{
+  "question": "How many HTTP requests were sent to Host example.test in the entire capture?",
+  "system_prompt": "Answer the user's question from the extracted HTTP rows. Return JSON with request_count (an integer).",
+  "user_prompt": {
+    "question": "How many HTTP requests were sent to Host example.test in the entire capture?",
+    "http_rows": [
+      {
+        "method": "GET",
+        "host": "example.test",
+        "uri": "/home",
+        "status_code": 200
+      },
+      {
+        "method": "GET",
+        "host": "example.test",
+        "uri": "/missing",
+        "status_code": 404
+      },
+      {
+        "method": "POST",
+        "host": "example.test",
+        "uri": "/form",
+        "status_code": 201
+      }
+    ]
+  },
+  "raw_model_output": "{\"request_count\": 3}",
+  "reference_request_count": 4,
+  "observed_error": true,
+  "omitted_request_frame": 8,
+  "omitted_uri": "/pending",
+  "explanation": "Baseline retrieval gave AI only three matched transactions and omitted an unanswered request. Fixed by querying all parsed requests in Python, not asking AI to count a partial catalog."
+}

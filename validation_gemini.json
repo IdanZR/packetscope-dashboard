@@ -1,0 +1,413 @@
+{
+  "created_utc": "2026-11-16T14:48:30.031042+00:00",
+  "capture_sha256": "89af772dd2056f98840de175c45d1f433a7842cb9e68bc5f6b5cb6e94991ebca",
+  "provenance": "Synthetic fixture created for this project; reference packet contents and timing verified separately with TShark. Not the user's manual capture.",
+  "selected_transaction": 1,
+  "selected_connection": 1,
+  "cases": [
+    {
+      "question": "Which HTTP request was the slowest?",
+      "expected": 500.0,
+      "frames": [
+        1,
+        2,
+        3
+      ],
+      "operation": "slowest",
+      "actual": 500.0,
+      "actual_frames": [
+        1,
+        2,
+        3
+      ],
+      "passed": true,
+      "result": {
+        "question": "Which HTTP request was the slowest?",
+        "plan": {
+          "operation": "slowest",
+          "host": "",
+          "uri": "",
+          "method": "",
+          "transaction_id": 0,
+          "connection_id": 0
+        },
+        "model": "gemini-3.5-flash-lite",
+        "provider": "gemini",
+        "prompt_version": "http-query-v2-grounded-selectors",
+        "capture_sha256": "89af772dd2056f98840de175c45d1f433a7842cb9e68bc5f6b5cb6e94991ebca",
+        "answer": "Slowest completed request: #1 GET example.test/home. Response time: 500 ms (request completion to response completion).",
+        "value": 500.0,
+        "evidence": [
+          {
+            "frame": 1,
+            "timestamp_utc": "2027-01-15T08:00:00.000000+00:00",
+            "role": "Transaction 1 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          },
+          {
+            "frame": 2,
+            "timestamp_utc": "2027-01-15T08:00:00.250000+00:00",
+            "role": "Transaction 1 response",
+            "source": "198.51.100.20",
+            "destination": "192.0.2.10"
+          },
+          {
+            "frame": 3,
+            "timestamp_utc": "2027-01-15T08:00:00.500000+00:00",
+            "role": "Transaction 1 response",
+            "source": "198.51.100.20",
+            "destination": "192.0.2.10"
+          }
+        ],
+        "state": "answered",
+        "transaction_ids": [
+          1
+        ]
+      }
+    },
+    {
+      "question": "What status code did GET /missing return?",
+      "expected": 404,
+      "frames": [
+        4,
+        5
+      ],
+      "operation": "status",
+      "actual": 404,
+      "actual_frames": [
+        4,
+        5
+      ],
+      "passed": true,
+      "result": {
+        "question": "What status code did GET /missing return?",
+        "plan": {
+          "operation": "status",
+          "host": "",
+          "uri": "/missing",
+          "method": "GET",
+          "transaction_id": 0,
+          "connection_id": 0
+        },
+        "model": "gemini-3.5-flash-lite",
+        "provider": "gemini",
+        "prompt_version": "http-query-v2-grounded-selectors",
+        "capture_sha256": "89af772dd2056f98840de175c45d1f433a7842cb9e68bc5f6b5cb6e94991ebca",
+        "answer": "Transaction #2 (GET /missing) returned HTTP 404.",
+        "value": 404,
+        "evidence": [
+          {
+            "frame": 4,
+            "timestamp_utc": "2027-01-15T08:00:00.750000+00:00",
+            "role": "Transaction 2 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          },
+          {
+            "frame": 5,
+            "timestamp_utc": "2027-01-15T08:00:01.000000+00:00",
+            "role": "Transaction 2 response",
+            "source": "198.51.100.20",
+            "destination": "192.0.2.10"
+          }
+        ],
+        "state": "answered",
+        "transaction_ids": [
+          2
+        ]
+      }
+    },
+    {
+      "question": "How many requests were sent to Host example.test?",
+      "expected": 4,
+      "frames": [
+        1,
+        4,
+        6,
+        8
+      ],
+      "operation": "host_count",
+      "actual": 4,
+      "actual_frames": [
+        1,
+        4,
+        6,
+        8
+      ],
+      "passed": true,
+      "result": {
+        "question": "How many requests were sent to Host example.test?",
+        "plan": {
+          "operation": "host_count",
+          "host": "example.test",
+          "uri": "",
+          "method": "",
+          "transaction_id": 0,
+          "connection_id": 0
+        },
+        "model": "gemini-3.5-flash-lite",
+        "provider": "gemini",
+        "prompt_version": "http-query-v2-grounded-selectors",
+        "capture_sha256": "89af772dd2056f98840de175c45d1f433a7842cb9e68bc5f6b5cb6e94991ebca",
+        "answer": "4 HTTP request(s) were sent to Host example.test. This includes requests without a captured response.",
+        "value": 4,
+        "evidence": [
+          {
+            "frame": 1,
+            "timestamp_utc": "2027-01-15T08:00:00.000000+00:00",
+            "role": "Transaction 1 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          },
+          {
+            "frame": 4,
+            "timestamp_utc": "2027-01-15T08:00:00.750000+00:00",
+            "role": "Transaction 2 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          },
+          {
+            "frame": 6,
+            "timestamp_utc": "2027-01-15T08:00:01.250000+00:00",
+            "role": "Transaction 3 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          },
+          {
+            "frame": 8,
+            "timestamp_utc": "2027-01-15T08:00:01.750000+00:00",
+            "role": "Transaction 4 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          }
+        ],
+        "state": "answered",
+        "transaction_ids": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "question": "What happened in the selected stream?",
+      "expected": {
+        "requests": 4,
+        "matched_responses": 3,
+        "unanswered": 1
+      },
+      "frames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "operation": "stream_summary",
+      "actual": {
+        "requests": 4,
+        "matched_responses": 3,
+        "unanswered": 1
+      },
+      "actual_frames": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "passed": true,
+      "result": {
+        "question": "What happened in the selected stream?",
+        "plan": {
+          "operation": "stream_summary",
+          "host": "",
+          "uri": "",
+          "method": "",
+          "transaction_id": 0,
+          "connection_id": 0
+        },
+        "model": "gemini-3.5-flash-lite",
+        "provider": "gemini",
+        "prompt_version": "http-query-v2-grounded-selectors",
+        "capture_sha256": "89af772dd2056f98840de175c45d1f433a7842cb9e68bc5f6b5cb6e94991ebca",
+        "answer": "HTTP connection #1: 4 request(s), 3 safely matched response(s), 1 request(s) without a safely matched response. Sequence: GET /home \u2192 200; GET /missing \u2192 404; POST /form \u2192 201; GET /pending \u2192 No response captured.",
+        "value": {
+          "requests": 4,
+          "matched_responses": 3,
+          "unanswered": 1
+        },
+        "evidence": [
+          {
+            "frame": 1,
+            "timestamp_utc": "2027-01-15T08:00:00.000000+00:00",
+            "role": "Transaction 1 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          },
+          {
+            "frame": 2,
+            "timestamp_utc": "2027-01-15T08:00:00.250000+00:00",
+            "role": "Transaction 1 response",
+            "source": "198.51.100.20",
+            "destination": "192.0.2.10"
+          },
+          {
+            "frame": 3,
+            "timestamp_utc": "2027-01-15T08:00:00.500000+00:00",
+            "role": "Transaction 1 response",
+            "source": "198.51.100.20",
+            "destination": "192.0.2.10"
+          },
+          {
+            "frame": 4,
+            "timestamp_utc": "2027-01-15T08:00:00.750000+00:00",
+            "role": "Transaction 2 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          },
+          {
+            "frame": 5,
+            "timestamp_utc": "2027-01-15T08:00:01.000000+00:00",
+            "role": "Transaction 2 response",
+            "source": "198.51.100.20",
+            "destination": "192.0.2.10"
+          },
+          {
+            "frame": 6,
+            "timestamp_utc": "2027-01-15T08:00:01.250000+00:00",
+            "role": "Transaction 3 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          },
+          {
+            "frame": 7,
+            "timestamp_utc": "2027-01-15T08:00:01.500000+00:00",
+            "role": "Transaction 3 response",
+            "source": "198.51.100.20",
+            "destination": "192.0.2.10"
+          },
+          {
+            "frame": 8,
+            "timestamp_utc": "2027-01-15T08:00:01.750000+00:00",
+            "role": "Transaction 4 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          }
+        ],
+        "state": "answered",
+        "transaction_ids": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "question": "Which requests had no response?",
+      "expected": 1,
+      "frames": [
+        8
+      ],
+      "operation": "unanswered",
+      "actual": 1,
+      "actual_frames": [
+        8
+      ],
+      "passed": true,
+      "result": {
+        "question": "Which requests had no response?",
+        "plan": {
+          "operation": "unanswered",
+          "host": "",
+          "uri": "",
+          "method": "",
+          "transaction_id": 0,
+          "connection_id": 0
+        },
+        "model": "gemini-3.5-flash-lite",
+        "provider": "gemini",
+        "prompt_version": "http-query-v2-grounded-selectors",
+        "capture_sha256": "89af772dd2056f98840de175c45d1f433a7842cb9e68bc5f6b5cb6e94991ebca",
+        "answer": "1 request(s) have no safely matched response in this capture. This does not prove the server never responded. Requests: #4 GET /pending.",
+        "value": 1,
+        "evidence": [
+          {
+            "frame": 8,
+            "timestamp_utc": "2027-01-15T08:00:01.750000+00:00",
+            "role": "Transaction 4 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          }
+        ],
+        "state": "answered",
+        "transaction_ids": [
+          4
+        ]
+      }
+    },
+    {
+      "question": "What status code did POST /form return?",
+      "expected": 201,
+      "frames": [
+        6,
+        7
+      ],
+      "operation": "status",
+      "actual": 201,
+      "actual_frames": [
+        6,
+        7
+      ],
+      "passed": true,
+      "result": {
+        "question": "What status code did POST /form return?",
+        "plan": {
+          "operation": "status",
+          "host": "",
+          "uri": "/form",
+          "method": "POST",
+          "transaction_id": 0,
+          "connection_id": 0
+        },
+        "model": "gemini-3.5-flash-lite",
+        "provider": "gemini",
+        "prompt_version": "http-query-v2-grounded-selectors",
+        "capture_sha256": "89af772dd2056f98840de175c45d1f433a7842cb9e68bc5f6b5cb6e94991ebca",
+        "answer": "Transaction #3 (POST /form) returned HTTP 201.",
+        "value": 201,
+        "evidence": [
+          {
+            "frame": 6,
+            "timestamp_utc": "2027-01-15T08:00:01.250000+00:00",
+            "role": "Transaction 3 request",
+            "source": "192.0.2.10",
+            "destination": "198.51.100.20"
+          },
+          {
+            "frame": 7,
+            "timestamp_utc": "2027-01-15T08:00:01.500000+00:00",
+            "role": "Transaction 3 response",
+            "source": "198.51.100.20",
+            "destination": "192.0.2.10"
+          }
+        ],
+        "state": "answered",
+        "transaction_ids": [
+          3
+        ]
+      }
+    }
+  ],
+  "passed": 6,
+  "total": 6
+}

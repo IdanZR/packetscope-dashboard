@@ -2,9 +2,9 @@
 import json
 import pandas as pd
 import streamlit as st
-from analyzer import iso_time
-from qa_ui import render_qa
-from http_content import DISPLAY_LIMIT, message_bytes, message_text
+from packetscope.analysis.capture import iso_time
+from packetscope.ui.qa import render_qa
+from packetscope.analysis.messages import DISPLAY_LIMIT, message_bytes, message_text
 
 TABLE_COLUMNS = ["transaction_id", "method", "host", "uri", "source", "source_port",
                  "destination", "destination_port", "status_code", "response_time_ms",

@@ -11,10 +11,11 @@ This appendix records development requests in summary form and the application's
 5. Group stream/transaction selection, questions, request/response details and evidence together.
 6. Add Light/Dark themes, useful charts, selectable tables, captured raw HTTP messages and an optional Gemini integration.
 7. Prepare private Git version control, installation/run documentation, commits and an audit of submission requirements.
+8. Organize the repository into clear folders while preserving installation and dashboard behavior.
 
 ## Runtime system prompt
 
-Canonical source: `qa_engine.py`, `SYSTEM`. Query schema: `PLAN_SCHEMA`. Prompt version: `http-query-v2-grounded-selectors`.
+Canonical source: `packetscope/ai/queries.py`, `SYSTEM`. Query schema: `PLAN_SCHEMA`. Prompt version: `http-query-v2-grounded-selectors`.
 
 ```text
 You translate a user's network question into ONE JSON query, never an answer.
@@ -38,11 +39,11 @@ What happened in the selected stream? => operation stream_summary, all strings e
 Which requests had no response? => operation unanswered, all strings empty, IDs 0.
 ```
 
-The user payload is JSON containing `question` and `extracted_data`. The latter includes request/transaction totals, selected transaction/connection IDs and at most 12 transaction summaries. The `context` function in `qa_engine.py` is the authoritative payload construction. Strings are capped at 160 characters. Raw PCAP data, HTTP headers and bodies are excluded.
+The user payload is JSON containing `question` and `extracted_data`. The latter includes request/transaction totals, selected transaction/connection IDs and at most 12 transaction summaries. The `context` function in `packetscope/ai/queries.py` is the authoritative payload construction. Strings are capped at 160 characters. Raw PCAP data, HTTP headers and bodies are excluded.
 
 ## Reference questions
 
-The six exact synthetic questions in `qa_validation.py` are:
+The six exact synthetic questions in `packetscope/ai/validation.py` are:
 
 - Which HTTP request was the slowest?
 - What status code did GET /missing return?
@@ -51,10 +52,10 @@ The six exact synthetic questions in `qa_validation.py` are:
 - Which requests had no response?
 - What status code did POST /form return?
 
-Expected answers and original frame evidence are stored with each case. Reports from real inference are `validation_ai.json` and `validation_gemini.json`; automated unit tests mock interpretation separately.
+Expected answers and original frame evidence are stored with each case. Reports from real inference are `reports/validation_ai.json` and `reports/validation_gemini.json`; automated unit tests mock interpretation separately.
 
 ## Recorded error prompt
 
-The baseline prompt and extracted rows are retained verbatim in `ai_error_case.json`. Its system prompt asks for `request_count` from extracted HTTP rows. The baseline omitted an unanswered request and returned three instead of four. `AI_VALIDATION.md` explains the correction and the separate invented-filter failure.
+The baseline prompt and extracted rows are retained verbatim in `reports/ai_error_case.json`. Its system prompt asks for `request_count` from extracted HTTP rows. The baseline omitted an unanswered request and returned three instead of four. `docs/AI_VALIDATION.md` explains the correction and the separate invented-filter failure.
 
-Technical sources are listed in `README.md`, `ANALYSIS_NOTES.md`, `LOCAL_AI.md` and `GEMINI.md`. Future prompt changes should update this snapshot and the validation documentation.
+Technical sources are listed in `README.md`, `docs/ANALYSIS_NOTES.md`, `docs/LOCAL_AI.md` and `docs/GEMINI.md`. Future prompt changes should update this snapshot and the validation documentation.

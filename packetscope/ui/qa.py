@@ -1,20 +1,21 @@
 """Free local Q&A in the existing light dashboard design."""
 import json
-from pathlib import Path
 import pandas as pd
 import streamlit as st
-from local_ai import availability
-from qa_engine import ask
-from setup_local_ai import LocalAIError
-from ai_settings import active_provider
+from packetscope.ai.local import availability
+from packetscope.ai.queries import ask
+from packetscope.ai.model_setup import LocalAIError
+from packetscope.ai.settings import active_provider
 
-ROOT = Path(__file__).resolve().parent
+from packetscope.paths import REPORTS_DIR
+
+ROOT = REPORTS_DIR
 
 
 def render_qa(capture, digest, selected_tx, selected_connection):
     provider = active_provider()
     if provider == "gemini":
-        from gemini_client import availability as gemini_availability
+        from packetscope.ai.gemini import availability as gemini_availability
         ready, message = gemini_availability()
         ready = ready or bool(st.session_state.get("gemini_key_override"))
         label = "Ask Gemini"
@@ -26,9 +27,9 @@ def render_qa(capture, digest, selected_tx, selected_connection):
         st.info(message)
         with st.expander("Set up free local AI") if provider == "local" else st.expander("Gemini setup"):
             if provider == "local":
-                st.write("On Windows, run setup_ai.bat once. It installs the CPU library and downloads a free model (about 640 MB). Then restart the dashboard. See LOCAL_AI.md for terminal commands.")
+                st.write("On Windows, run scripts/setup_ai.bat once. It installs the CPU library and downloads a free model (about 640 MB). Then restart the dashboard. See docs/LOCAL_AI.md for terminal commands.")
             else:
-                st.write("Open AI settings to enter an API key for this session, or set GEMINI_API_KEY before starting the app. See GEMINI.md.")
+                st.write("Open AI settings to enter an API key for this session, or set GEMINI_API_KEY before starting the app. See docs/GEMINI.md.")
     txs = capture.http_transactions
     if not txs:
         st.info("No readable HTTP transactions are available for these questions. Upload a plaintext HTTP capture or choose the HTTP transactions sample.")
@@ -105,7 +106,7 @@ def render_qa(capture, digest, selected_tx, selected_connection):
             st.caption("The report always refers to sample_data/http_transactions.pcap, regardless of the open file.")
             st.download_button("Download validation report", report_path.read_bytes(), "validation_ai.json", "application/json")
         if st.button("Run six checks on the practice capture", disabled=not ready):
-            from qa_validation import run_checks
+            from packetscope.ai.validation import run_checks
             try:
                 bar = st.progress(0, text="Testing local AI on the synthetic capture...")
                 live = run_checks(lambda i, n: bar.progress(i/n), provider=provider,

@@ -4,9 +4,9 @@ import json
 import unittest
 from pathlib import Path
 from unittest.mock import patch
-from analyzer import analyze_capture
-from qa_engine import ask, context, execute, ground_selectors, validate_plan
-from setup_local_ai import LocalAIError
+from packetscope.analysis.capture import analyze_capture
+from packetscope.ai.queries import ask, context, execute, ground_selectors, validate_plan
+from packetscope.ai.model_setup import LocalAIError
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -76,11 +76,11 @@ class QATests(unittest.TestCase):
         self.assertEqual(ground_selectors(plan("status", transaction_id=2), "Status of transaction #2?"), plan("status", transaction_id=2))
 
     def test_ask_accepts_only_a_typed_plan_and_propagates_failure(self):
-        with patch("local_ai.complete", return_value=json.dumps(plan("status", uri="/missing"))):
+        with patch("packetscope.ai.local.complete", return_value=json.dumps(plan("status", uri="/missing"))):
             result = ask(self.capture, "What status for /missing?", capture_hash="fixture-hash")
         self.assertEqual(result["value"], 404)
         self.assertEqual(result["capture_sha256"], "fixture-hash")
-        with patch("local_ai.complete", side_effect=LocalAIError("Model unavailable")):
+        with patch("packetscope.ai.local.complete", side_effect=LocalAIError("Model unavailable")):
             with self.assertRaisesRegex(LocalAIError, "unavailable"):
                 ask(self.capture, "Which request was slowest?")
         with self.assertRaises(LocalAIError):

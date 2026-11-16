@@ -5,8 +5,8 @@ import re
 import time
 import urllib.request
 import urllib.error
-from credentials import load_key
-from setup_local_ai import LocalAIError
+from packetscope.ai.credentials import load_key
+from packetscope.ai.model_setup import LocalAIError
 
 MODEL_NAME = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 ORIGIN = "https://generativelanguage.googleapis.com/v1beta/"

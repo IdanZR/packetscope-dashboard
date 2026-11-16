@@ -5,10 +5,10 @@ import urllib.error
 from io import BytesIO
 from unittest.mock import patch, Mock
 from pathlib import Path
-from analyzer import analyze_capture
-from http_content import message_bytes, message_text, DISPLAY_LIMIT
-from qa_engine import ask, context
-from setup_local_ai import LocalAIError
+from packetscope.analysis.capture import analyze_capture
+from packetscope.analysis.messages import message_bytes, message_text, DISPLAY_LIMIT
+from packetscope.ai.queries import ask, context
+from packetscope.ai.model_setup import LocalAIError
 from test_http import Wire, GET, OK
 
 
@@ -45,7 +45,7 @@ class CloudAndMessageTests(unittest.TestCase):
     def test_gemini_query_uses_the_same_factual_engine_without_exporting_a_key(self):
         capture=Wire().send(0,GET).send(1,OK).capture()
         typed=dict(operation="status",host="",uri="",method="",transaction_id=0,connection_id=0)
-        with patch("gemini_client.complete",return_value=json.dumps(typed)) as complete:
+        with patch("packetscope.ai.gemini.complete",return_value=json.dumps(typed)) as complete:
             result=ask(capture,"What status did the selected request return?",1,1,provider="gemini",api_key="test-secret")
         self.assertEqual(result["value"],200)
         self.assertEqual(result["provider"],"gemini")
@@ -53,7 +53,7 @@ class CloudAndMessageTests(unittest.TestCase):
         self.assertNotIn("raw_message",complete.call_args.args[1])
 
     def test_cloud_errors_never_include_secret_vendor_error_text(self):
-        from gemini_client import _request
+        from packetscope.ai.gemini import _request
         error=urllib.error.HTTPError("https://example.invalid",403,"test-secret",{},BytesIO(b'{"error":{"message":"test-secret"}}'))
         opener=Mock()
         opener.open.side_effect=error

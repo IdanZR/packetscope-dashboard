@@ -4,11 +4,13 @@ PacketScope uses **Qwen3-0.6B-Q8_0** on your CPU through **llama-cpp-python 0.3.
 
 ## Windows
 
-Run `setup_ai.bat` once, then `start.bat`. Alternatively, in the same virtual environment used by Streamlit:
+Run commands from the project root, where `app.py` and `requirements.txt` are located.
+
+Run `scripts/setup_ai.bat` once, then `start.bat`. Alternatively, in the same virtual environment used by Streamlit:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-ai.txt
-.\.venv\Scripts\python.exe setup_local_ai.py
+.\.venv\Scripts\python.exe -m pip install -r requirements/local-ai.txt
+.\.venv\Scripts\python.exe -m packetscope.ai.model_setup
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
@@ -30,17 +32,17 @@ In **HTTP analysis**, **Stream for questions** and **Select a transaction** sit 
 ## Reproduce the recorded experiments
 
 ```powershell
-.\.venv\Scripts\python.exe qa_validation.py
+.\.venv\Scripts\python.exe -m packetscope.ai.validation
 # Also reproduce the intentionally flawed baseline retrieval:
-.\.venv\Scripts\python.exe qa_validation.py --baseline
+.\.venv\Scripts\python.exe -m packetscope.ai.validation --baseline
 ```
 
-The command writes `validation_ai.json`; `--baseline` additionally writes `ai_error_case.json`. The dashboard can rerun the six checks without writing files. Reference results use the synthetic practice capture, not a student's manual capture. See `AI_VALIDATION.md` for the comparison and actual errors.
+The command writes `reports/validation_ai.json`; `--baseline` additionally writes `reports/ai_error_case.json`. The dashboard can rerun the six checks without writing files. Reference results use the synthetic practice capture, not a student's manual capture. See `docs/AI_VALIDATION.md` for the comparison and actual errors.
 
 ## Sources and licenses
 
 - [Official Qwen GGUF model and Apache 2.0 license](https://huggingface.co/Qwen/Qwen3-0.6B-GGUF). Download is pinned to commit `23749fefcc72300e3a2ad315e1317431b06b590a` and checked against SHA-256 `9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031` before loading.
-- [Official llama-cpp-python CPU installation instructions](https://github.com/abetlen/llama-cpp-python#installation), [MIT license](https://github.com/abetlen/llama-cpp-python/blob/main/LICENSE.md). `requirements-ai.txt` pins the CPU wheel version; pip verifies any hash supplied by its index.
-- [Official Qwen3 usage and non-thinking mode](https://huggingface.co/Qwen/Qwen3-0.6B). `local_ai.py` uses ChatML and an empty thinking prefix for the constrained query.
+- [Official llama-cpp-python CPU installation instructions](https://github.com/abetlen/llama-cpp-python#installation), [MIT license](https://github.com/abetlen/llama-cpp-python/blob/main/LICENSE.md). `requirements/local-ai.txt` pins the CPU wheel version; pip verifies any hash supplied by its index.
+- [Official Qwen3 usage and non-thinking mode](https://huggingface.co/Qwen/Qwen3-0.6B). `packetscope/ai/local.py` uses ChatML and an empty thinking prefix for the constrained query.
 
 No model or third-party binaries are redistributed in the source archive. Downloaded model data stays in `.local_ai/`. Keep the model's license with any model redistribution.

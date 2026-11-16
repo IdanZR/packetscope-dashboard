@@ -1,6 +1,6 @@
 @echo off
 setlocal
-cd /d "%~dp0"
+cd /d "%~dp0.."
 if exist ".venv\Scripts\python.exe" goto install
 where py >nul 2>nul
 if errorlevel 1 goto pythonfallback
@@ -12,7 +12,7 @@ python -m venv .venv
 if not exist ".venv\Scripts\python.exe" goto fail
 ".venv\Scripts\python.exe" -m pip install -r requirements.txt
 if errorlevel 1 goto fail
-".venv\Scripts\python.exe" run_gemini.py
+".venv\Scripts\python.exe" scripts/run_gemini.py
 exit /b %errorlevel%
 :fail
 echo Setup failed. See README.md and the error above.

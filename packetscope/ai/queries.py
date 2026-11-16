@@ -2,8 +2,8 @@
 import json
 import math
 import re
-from analyzer import iso_time
-from setup_local_ai import LocalAIError, MODEL_NAME
+from packetscope.analysis.capture import iso_time
+from packetscope.ai.model_setup import LocalAIError, MODEL_NAME
 
 PROMPT_VERSION = "http-query-v2-grounded-selectors"
 OPERATIONS = ["slowest", "status", "host_count", "stream_summary", "unanswered", "unsupported"]
@@ -53,10 +53,10 @@ def interpret(capture, question, selected_transaction=0, selected_connection=0, 
                                                                  selected_connection)), ensure_ascii=True)
     try:
         if provider == "gemini":
-            from gemini_client import complete
+            from packetscope.ai.gemini import complete
             raw = complete(SYSTEM, user, PLAN_SCHEMA, model=model, key=api_key)
         else:
-            from local_ai import complete
+            from packetscope.ai.local import complete
             raw = complete(SYSTEM, user, PLAN_SCHEMA)
         plan = json.loads(raw)
     except (ValueError, TypeError) as exc:
@@ -186,7 +186,7 @@ def ask(capture, question, selected_transaction=0, selected_connection=0, captur
     plan = interpret(capture, question, selected_transaction, selected_connection, provider, model, api_key)
     result = execute(capture, plan, selected_transaction, selected_connection)
     if provider == "gemini":
-        from gemini_client import MODEL_NAME as GEMINI_MODEL
+        from packetscope.ai.gemini import MODEL_NAME as GEMINI_MODEL
         model_name = model or GEMINI_MODEL
     else:
         model_name = MODEL_NAME

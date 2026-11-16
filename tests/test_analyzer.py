@@ -5,8 +5,8 @@ from collections import Counter
 from pathlib import Path
 from unittest.mock import patch
 
-from analyzer import CaptureError, analyze_capture, endpoints, summarize, timeline
-from make_demo import demo_packets, generate
+from packetscope.analysis.capture import CaptureError, analyze_capture, endpoints, summarize, timeline
+from scripts.make_demo import demo_packets, generate
 
 
 def pcap(raw=None, endian="<", nano=False, fraction=250000, wirelen=None, link=1):
@@ -125,9 +125,9 @@ class AnalyzerTests(unittest.TestCase):
         self.assertEqual(len(capture.warnings), 2)
 
     def test_explicit_resource_limits(self):
-        with patch("analyzer.MAX_BYTES", 10), self.assertRaises(CaptureError):
+        with patch("packetscope.analysis.capture.MAX_BYTES", 10), self.assertRaises(CaptureError):
             analyze_capture(pcap())
-        with patch("analyzer.MAX_PACKETS", 1), self.assertRaises(CaptureError):
+        with patch("packetscope.analysis.capture.MAX_PACKETS", 1), self.assertRaises(CaptureError):
             analyze_capture((self.path/"demo.pcap").read_bytes())
 
     def test_timeline_volume_is_conserved_and_idle_bins_exist(self):

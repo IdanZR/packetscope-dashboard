@@ -3,7 +3,7 @@ import struct
 import unittest
 from unittest.mock import patch
 from scapy.all import Ether, IP, IPv6, Raw, TCP
-from analyzer import analyze_capture
+from packetscope.analysis.capture import analyze_capture
 
 
 GET = b"GET /one HTTP/1.1\r\nHost: example.test\r\n\r\n"
@@ -186,7 +186,7 @@ class HttpTests(unittest.TestCase):
         self.assertTrue(tx["notes"])
 
     def test_reconstruction_limit_is_explicit_without_affecting_packet_totals(self):
-        with patch("http_analysis.MAX_DIRECTION", 8):
+        with patch("packetscope.analysis.http.MAX_DIRECTION", 8):
             cap = Wire().send(0, GET).send(1, OK).capture()
         self.assertEqual(len(cap.rows), 2)
         self.assertEqual(cap.http_transactions, [])

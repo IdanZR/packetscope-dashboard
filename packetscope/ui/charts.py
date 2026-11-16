@@ -3,8 +3,8 @@ from collections import Counter
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-from analyzer import endpoints, summarize, timeline
-from ui_theme import ACCENTS, style_chart
+from packetscope.analysis.capture import endpoints, summarize, timeline
+from packetscope.ui.theme import ACCENTS, style_chart
 
 CONFIG = dict(displayModeBar="hover", displaylogo=False, modeBarButtonsToRemove=["lasso2d", "select2d", "autoScale2d"])
 

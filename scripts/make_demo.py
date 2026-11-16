@@ -55,7 +55,7 @@ def http_demo_packets():
 
 
 def generate(directory=None):
-    target = Path(directory) if directory else Path(__file__).parent / "sample_data"
+    target = Path(directory) if directory else Path(__file__).resolve().parents[1] / "sample_data"
     target.mkdir(parents=True, exist_ok=True)
     packets = demo_packets()
     wrpcap(str(target / "demo.pcap"), packets)

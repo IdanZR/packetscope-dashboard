@@ -13,4 +13,4 @@ if __name__ == "__main__":
     environment["GEMINI_API_KEY"] = key
     del key
     raise SystemExit(subprocess.call([sys.executable,"-m","streamlit","run","app.py"],
-                                    cwd=Path(__file__).resolve().parent,env=environment))
+                                    cwd=Path(__file__).resolve().parents[1],env=environment))

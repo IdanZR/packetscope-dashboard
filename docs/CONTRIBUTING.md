@@ -23,7 +23,7 @@ git diff
 Stage the files deliberately. For example, after editing documentation:
 
 ```powershell
-git add README.md SUBMISSION_CHECKLIST.md
+git add README.md docs/SUBMISSION_CHECKLIST.md
 git diff --cached --check
 git diff --cached
 git commit -m "docs: clarify installation and submission instructions"

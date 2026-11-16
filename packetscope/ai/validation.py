@@ -3,12 +3,14 @@ import argparse
 import hashlib
 import json
 from datetime import datetime, timezone
-from pathlib import Path
-from analyzer import analyze_capture
-from qa_engine import ask
-from local_ai import complete
+from packetscope.analysis.capture import analyze_capture
+from packetscope.ai.queries import ask
+from packetscope.ai.local import complete
 
-ROOT = Path(__file__).resolve().parent
+from packetscope.paths import PROJECT_ROOT, REPORTS_DIR
+from packetscope.ai.model_setup import LocalAIError
+
+ROOT = PROJECT_ROOT
 CASES = [
     dict(question="Which HTTP request was the slowest?", expected=500.0, frames=[1, 2, 3], operation="slowest"),
     dict(question="What status code did GET /missing return?", expected=404, frames=[4, 5], operation="status"),
@@ -67,10 +69,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.baseline:
         result = baseline()
-        (ROOT/"ai_error_case.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
+        (REPORTS_DIR/"ai_error_case.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
         print("Observed baseline:", result["raw_model_output"], flush=True)
     report = run_checks(lambda i, n: print(f"Live model check {i+1}/{n}", flush=True))
-    (ROOT/"validation_ai.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    (REPORTS_DIR/"validation_ai.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"Passed {report['passed']}/{report['total']}", flush=True)
     for case in report["cases"]:
         print(case["question"], case["actual"], case["result"]["plan"], flush=True)

@@ -6,7 +6,7 @@ PacketScope supports **Gemini 3.5 Flash-Lite** through Google's official REST AP
 
 Enter a key in **AI settings → API key for this session**. This is a password field with no prefilled key. The override stays in server-side session memory and is excluded from exports. You can instead set the `GEMINI_API_KEY` environment variable before running Streamlit. Never add a real key to Python source, README files, screenshots or a submission ZIP.
 
-The running development server uses an in-memory environment credential. No credential file is retained. On Windows, `start_gemini.bat` installs the core dependencies if needed, prompts for the key without echoing it, then launches Streamlit with the key in process memory. Closing the server discards that process credential. You can also use the session field or provide GEMINI_API_KEY through your own environment setup.
+The running development server uses an in-memory environment credential. No credential file is retained. On Windows, `scripts/start_gemini.bat` installs the core dependencies if needed, prompts for the key without echoing it, then launches Streamlit with the key in process memory. Closing the server discards that process credential. You can also use the session field or provide GEMINI_API_KEY through your own environment setup.
 
 The source packager excludes secrets files, environment files, encrypted credential files and model data. It also checks for the currently configured key before writing the ZIP. Reports contain the provider/model name and interpreted query, never the key.
 
@@ -18,7 +18,7 @@ Gemini returns a JSON query conforming to `PLAN_SCHEMA`. Python validates select
 
 ## Verification and service errors
 
-The key was verified against Google's model listing, and six synthetic reference questions passed using real Gemini calls. See `validation_gemini.json`. The historical local Qwen reports remain separate in `validation_ai.json` and `validation_ai_before_fix.json`; their errors are documented in `AI_VALIDATION.md`.
+The key was verified against Google's model listing, and six synthetic reference questions passed using real Gemini calls. See `reports/validation_gemini.json`. The historical local Qwen reports remain separate in `reports/validation_ai.json` and `reports/validation_ai_before_fix.json`; their errors are documented in `docs/AI_VALIDATION.md`.
 
 Requests have a 45-second timeout, a 2 MB response limit, no redirects and at most one retry for HTTP 5xx service errors. API keys are sent in the `x-goog-api-key` header, never in URL parameters. Authentication, quota and service errors are summarized without displaying vendor response text or credentials. There is no automatic provider fallback or background generation at startup.
 

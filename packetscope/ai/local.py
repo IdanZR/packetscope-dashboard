@@ -3,16 +3,16 @@ from functools import lru_cache
 import importlib.util
 import json
 import threading
-from setup_local_ai import MODEL, MODEL_HASH, MODEL_NAME, LocalAIError, _digest
+from packetscope.ai.model_setup import MODEL, MODEL_HASH, MODEL_NAME, LocalAIError, _digest
 
 LOCK = threading.Lock()
 
 
 def availability():
     if importlib.util.find_spec("llama_cpp") is None:
-        return False, "Install the local AI library using setup_ai.bat or LOCAL_AI.md."
+        return False, "Install the local AI library using scripts/setup_ai.bat or docs/LOCAL_AI.md."
     if not MODEL.is_file():
-        return False, "Download the free model once using setup_ai.bat or python setup_local_ai.py."
+        return False, "Download the free model once using scripts/setup_ai.bat or python -m packetscope.ai.model_setup."
     return True, f"{MODEL_NAME} · CPU · no API key"
 
 
@@ -22,7 +22,7 @@ def _model():
     if not ready:
         raise LocalAIError(message)
     if _digest(MODEL) != MODEL_HASH:
-        raise LocalAIError("The model checksum changed. Run python setup_local_ai.py to restore it.")
+        raise LocalAIError("The model checksum changed. Run python -m packetscope.ai.model_setup to restore it.")
     try:
         from llama_cpp import Llama
         return Llama(model_path=str(MODEL), n_ctx=4096, n_threads=4, n_threads_batch=4,

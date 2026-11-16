@@ -1,8 +1,8 @@
 """Explicit provider choice and session-only credential override."""
 import streamlit as st
-from credentials import load_key
-from gemini_client import MODEL_NAME, check_connection
-from setup_local_ai import LocalAIError
+from packetscope.ai.credentials import load_key
+from packetscope.ai.gemini import MODEL_NAME, check_connection
+from packetscope.ai.model_setup import LocalAIError
 
 
 def render_settings():

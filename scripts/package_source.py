@@ -4,8 +4,8 @@ import os
 import re
 import zipfile
 
-ROOT=Path(__file__).resolve().parent
-EXCLUDED={".local_ai",".venv","__pycache__",".pytest_cache",".git",".private","work"}
+ROOT=Path(__file__).resolve().parents[1]
+EXCLUDED={".local_ai",".venv","__pycache__",".pytest_cache",".git",".private","work","uploads","captures"}
 
 
 def package(destination=None):
@@ -16,7 +16,7 @@ def package(destination=None):
         if not path.is_file():
             continue
         relative=path.relative_to(ROOT)
-        if EXCLUDED.intersection(relative.parts) or path.suffix in (".pyc",".dpapi",".key"):
+        if EXCLUDED.intersection(relative.parts) or path.suffix in (".pyc",".dpapi",".key",".pem",".zip",".part"):
             continue
         if path.name=="secrets.toml" or path.name.startswith(".env") or path.resolve()==destination.resolve():
             continue

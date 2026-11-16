@@ -1,14 +1,15 @@
-"""Download the pinned free Qwen model once: python setup_local_ai.py.
+"""Download the pinned free Qwen model once: python -m packetscope.ai.model_setup.
 
 Inference uses llama-cpp-python on CPU. No account or API key is needed.
 """
-from pathlib import Path
 import argparse
 import hashlib
 import json
 import urllib.request
 
-ROOT = Path(__file__).resolve().parent
+from packetscope.paths import PROJECT_ROOT
+
+ROOT = PROJECT_ROOT
 ASSETS = ROOT / ".local_ai"
 MODEL = ASSETS / "Qwen3-0.6B-Q8_0.gguf"
 MODEL_NAME = "Qwen3-0.6B-Q8_0"

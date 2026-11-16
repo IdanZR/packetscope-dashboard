@@ -19,9 +19,9 @@ def transaction_selector(app):
 class AppTests(unittest.TestCase):
     def setUp(self):
         # Interface tests never use the developer's real cloud credential.
-        self.enterContext(patch("ai_settings.load_key", return_value=""))
+        self.enterContext(patch("packetscope.ai.settings.load_key", return_value=""))
 
-    @patch("qa_ui.availability", return_value=(True, "Test model availability"))
+    @patch("packetscope.ui.qa.availability", return_value=(True, "Test model availability"))
     def test_shared_stream_selection_routes_questions_and_clears_old_answer(self, _availability):
         import json
         import struct
@@ -41,7 +41,7 @@ class AppTests(unittest.TestCase):
         self.assertEqual(transaction_selector(app).value, 2)
         next(i for i in app.text_input if i.label == "Your question").set_value("What status did the selected request return?")
         typed = dict(operation="status", host="", uri="", method="", transaction_id=0, connection_id=0)
-        with patch("local_ai.complete", return_value=json.dumps(typed)):
+        with patch("packetscope.ai.local.complete", return_value=json.dumps(typed)):
             next(b for b in app.button if b.label == "Ask local AI").click().run()
         self.assertTrue(any("returned HTTP 201" in t.value for t in app.text))
         next(s for s in app.selectbox if s.label == "Stream for questions").set_value(1).run()
@@ -49,22 +49,22 @@ class AppTests(unittest.TestCase):
         self.assertEqual(transaction_selector(app).value, 1)
         self.assertFalse(any("returned HTTP 201" in t.value for t in app.text))
 
-    @patch("qa_ui.availability", return_value=(True, "Test model availability"))
+    @patch("packetscope.ui.qa.availability", return_value=(True, "Test model availability"))
     def test_qa_answer_and_evidence_from_interpreted_query(self, _availability):
         import json
-        from setup_local_ai import LocalAIError
+        from packetscope.ai.model_setup import LocalAIError
         app = AppTest.from_file(str(ROOT/"app.py"), default_timeout=30).run()
         app.selectbox(key="sample_choice").set_value("HTTP transactions").run()
         question = next(i for i in app.text_input if i.label == "Your question")
         question.set_value("How many requests were sent to Host example.test?")
         typed = dict(operation="host_count", host="example.test", uri="", method="", transaction_id=0, connection_id=0)
-        with patch("local_ai.complete", return_value=json.dumps(typed)):
+        with patch("packetscope.ai.local.complete", return_value=json.dumps(typed)):
             next(b for b in app.button if b.label == "Ask local AI").click().run()
         self.assertFalse(app.exception)
         self.assertTrue(any("4 HTTP request(s)" in t.value for t in app.text))
         evidence = next(d.value for d in app.dataframe if "timestamp_utc" in d.value.columns)
         self.assertEqual(evidence["frame"].tolist(), [1, 4, 6, 8])
-        with patch("local_ai.complete", side_effect=LocalAIError("Model unavailable")):
+        with patch("packetscope.ai.local.complete", side_effect=LocalAIError("Model unavailable")):
             next(b for b in app.button if b.label == "Ask local AI").click().run()
         self.assertFalse(app.exception)
         self.assertTrue(any("Model unavailable" in e.value for e in app.error))

@@ -9,7 +9,7 @@ import re
 import struct
 
 from scapy.all import ARP, DNS, Ether, ICMP, IP, IPv6, IPv6ExtHdrFragment, Padding, TCP, UDP, conf
-from http_analysis import HttpCollector
+from packetscope.analysis.http import HttpCollector
 
 MAX_BYTES = 100 * 1024 * 1024
 MAX_PACKETS = 250_000

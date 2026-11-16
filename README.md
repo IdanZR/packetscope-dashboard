@@ -4,7 +4,7 @@ A Python dashboard for inspecting PCAP/PCAPNG captures, reconstructing plaintext
 
 The English interface includes Light/Dark/System themes, interactive charts, selectable tables, full captured HTTP messages and JSON/CSV exports. Capture analysis runs locally. AI is optional: use free offline Qwen after setup, or configure your own Gemini key.
 
-![Traffic overview in dark mode](redesign_dark.png)
+![Traffic overview in dark mode](docs/screenshots/redesign_dark.png)
 
 ## Install and run on Windows
 
@@ -29,12 +29,12 @@ For a shortcut, run **`start.bat`** from the extracted/cloned directory. It crea
 | Mode | Setup | Network during questions |
 |---|---|---|
 | Capture/HTTP analysis | Core installation above | None |
-| Local Qwen on CPU | Run `setup_ai.bat` once, then `start.bat` | None after setup |
-| Gemini | Run `start_gemini.bat`, enter your key in the hidden prompt | Required |
+| Local Qwen on CPU | Run `scripts/setup_ai.bat` once, then `start.bat` | None after setup |
+| Gemini | Run `scripts/start_gemini.bat`, enter your key in the hidden prompt | Required |
 
-Local setup downloads about **640 MB** of model weights, stored in `.local_ai/` and excluded from Git/source archives. It installs a CPU wheel through `requirements-ai.txt`. See [LOCAL_AI.md](LOCAL_AI.md) for manual commands, compatibility, model sources and license information.
+Local setup downloads about **640 MB** of model weights, stored in `.local_ai/` and excluded from Git/source archives. It installs a CPU wheel through `requirements/local-ai.txt`. See [LOCAL_AI.md](docs/LOCAL_AI.md) for manual commands, compatibility, model sources and license information.
 
-For Gemini, you can also choose **AI settings > Gemini** and use the password field for a session key. The application reads `GEMINI_API_KEY` if supplied by your own environment. Keys remain in process/session memory. Gemini receives your question and limited extracted HTTP metadata; raw captures, message headers and bodies are not sent. Account quotas and pricing apply. See [GEMINI.md](GEMINI.md).
+For Gemini, you can also choose **AI settings > Gemini** and use the password field for a session key. The application reads `GEMINI_API_KEY` if supplied by your own environment. Keys remain in process/session memory. Gemini receives your question and limited extracted HTTP metadata; raw captures, message headers and bodies are not sent. Account quotas and pricing apply. See [GEMINI.md](docs/GEMINI.md).
 
 The normal test suite needs neither a model download nor an API key.
 
@@ -62,7 +62,7 @@ The `.bat` shortcuts are Windows-only. Optional local-model wheel availability d
 
 HTTP charts and questions use the full parsed HTTP capture, independently of the traffic-chart filters. Changing stream/transaction/provider clears the previous AI answer.
 
-![Captured HTTP request and response](redesign_messages.png)
+![Captured HTTP request and response](docs/screenshots/redesign_messages.png)
 
 ### Reproducible sample
 
@@ -87,7 +87,7 @@ There are four requests to `example.test` in one connection. The overview sample
 - **HTTPS payloads are encrypted.** This version does not decrypt TLS, parse HTTP/2 or HTTP/3, or reassemble IP fragments. An HTTPS capture can show packet/endpoint/timing metadata while containing no readable HTTP transactions. Raising a payload limit does not decrypt it.
 - AI produces a typed query; Python validates selectors and computes the facts from parsed transactions. The AI is not given the PCAP file. Current reference validations use synthetic traffic and do not replace comparison with the students' own manual work.
 
-Detailed calculation definitions and parsing notes are retained in [ANALYSIS_NOTES.md](ANALYSIS_NOTES.md).
+Detailed calculation definitions and parsing notes are retained in [ANALYSIS_NOTES.md](docs/ANALYSIS_NOTES.md).
 
 ## Assignment coverage and submission
 
@@ -97,12 +97,12 @@ Detailed calculation definitions and parsing notes are retained in [ANALYSIS_NOT
 | 27-29: request/response matching, fields, transaction drilldown | HTTP & AI; Request & response; Packet evidence |
 | 30-32: natural-language questions and supporting evidence | HTTP & AI > Ask AI |
 | 33: at least five comparisons with known manual answers | Six synthetic reference checks exist; comparison to the students' actual manual answers is still pending |
-| 34: an observed AI error and improvement | [AI_VALIDATION.md](AI_VALIDATION.md), original JSON reports |
+| 34: an observed AI error and improvement | [AI_VALIDATION.md](docs/AI_VALIDATION.md), original JSON reports |
 | Useful extension | Interactive filters, selectable rows, targeted exports, latency/outcome charts and raw message downloads |
 
-**The source ZIP is only the dashboard deliverable.** The assignment also requires the manual PDF, actual capture files and AI documentation in a student-ID-named ZIP submitted through Moodle. See [SUBMISSION_CHECKLIST.md](SUBMISSION_CHECKLIST.md) for the checked requirements, missing items and suggested final archive layout.
+**The source ZIP is only the dashboard deliverable.** The assignment also requires the manual PDF, actual capture files and AI documentation in a student-ID-named ZIP submitted through Moodle. See [SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md) for the checked requirements, missing items and suggested final archive layout.
 
-AI assistance and main prompt references: [AI_USAGE.md](AI_USAGE.md), [PROMPTS.md](PROMPTS.md). Do not include API keys or private credentials in the report, captures or repository. The repository should remain private.
+AI assistance and main prompt references: [AI_USAGE.md](docs/AI_USAGE.md), [PROMPTS.md](docs/PROMPTS.md). Do not include API keys or private credentials in the report, captures or repository. The repository should remain private.
 
 ## Tests and source package
 
@@ -110,34 +110,43 @@ From the project root after core installation:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
-.\.venv\Scripts\python.exe package_source.py
+.\.venv\Scripts\python.exe scripts/package_source.py
 ```
 
-The suite covers capture parsing, HTTP reassembly, UI interactions, query execution, cloud error handling and raw message retention. Cloud/model interpretation is mocked in unit tests. Actual model runs are recorded separately in `validation_ai.json` and `validation_gemini.json`; historical failed runs are preserved. See [VALIDATION.md](VALIDATION.md) and [AI_VALIDATION.md](AI_VALIDATION.md).
+The suite covers capture parsing, HTTP reassembly, UI interactions, query execution, cloud error handling and raw message retention. Cloud/model interpretation is mocked in unit tests. Actual model runs are recorded separately in `reports/validation_ai.json` and `reports/validation_gemini.json`; historical failed runs are preserved. See [VALIDATION.md](docs/VALIDATION.md) and [AI_VALIDATION.md](docs/AI_VALIDATION.md).
 
 The packager writes **`PacketScope_Dashboard_V1.zip` one directory above the project**, verifies the ZIP and scans for credential patterns. It excludes Git history, virtual environments, model weights and configured secret paths. Inspect any new files before packaging; real captures needed for submission should be added separately to the final assignment archive.
 
-Regenerate synthetic fixtures with `python make_demo.py`. Optional independent verification with Wireshark/TShark is documented in `validation_http.json`.
+Regenerate synthetic fixtures with `python scripts/make_demo.py`. Optional independent verification with Wireshark/TShark is documented in `reports/validation_http.json`.
 
 ## Project layout
 
-| Path | Purpose |
-|---|---|
-| `app.py`, `ui_theme.py`, `charts.py` | Dashboard, appearance and charts |
-| `analyzer.py` | Capture parsing, packet classification and statistics |
-| `http_analysis.py`, `http_content.py`, `http_ui.py` | TCP/HTTP reconstruction, raw bytes and transaction workspace |
-| `qa_engine.py`, `qa_ui.py`, `qa_validation.py` | Typed queries, evidence, AI interface and reference checks |
-| `local_ai.py`, `setup_local_ai.py` | Optional offline CPU inference and verified model download |
-| `gemini_client.py`, `credentials.py`, `ai_settings.py` | Optional Gemini transport and session settings |
-| `sample_data/`, `make_demo.py` | Synthetic captures and reproducible generator |
-| `tests/`, `validation_*.json` | Automated tests and recorded validation evidence |
-| `.streamlit/config.toml` | Local server and native theme configuration |
-| `requirements*.txt`, `*.bat` | Dependencies and Windows launch/setup shortcuts |
-| `package_source.py` | Source ZIP builder |
+```text
+packetscope-dashboard/
+  app.py                    Streamlit entry point
+  start.bat                 Windows launch shortcut
+  requirements.txt          Core dependencies
+  packetscope/              Application code
+    dashboard.py            Main dashboard
+    analysis/               Capture parsing and HTTP reconstruction
+    ai/                     Providers, query planning and validation
+    ui/                     Views, tables and charts
+  docs/                     Setup, methodology, AI and submission guides
+    screenshots/            Current screenshots
+      archive/              Earlier interface screenshots
+  reports/                  Recorded validation results and AI error evidence
+  scripts/                  Setup, fixture generation and packaging tools
+  requirements/             Optional local-AI dependencies
+  sample_data/              Synthetic PCAP/PCAPNG fixtures
+  tests/                    Automated checks
+  .streamlit/               Server and theme configuration
+```
+
+Start with this README. The [submission checklist](docs/SUBMISSION_CHECKLIST.md) lists coursework deliverables, and [Git instructions](docs/CONTRIBUTING.md) explain commits and pushes. Only source, launch/configuration files and this README stay at the repository root.
 
 ## Git workflow
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for branch, commit and push commands. Environments, models, credentials and captures outside `sample_data/` are ignored. The only versioned captures are synthetic fixtures.
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for branch, commit and push commands. Environments, models, credentials and captures outside `sample_data/` are ignored. The only versioned captures are synthetic fixtures.
 
 ## Troubleshooting
 
@@ -148,7 +157,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for branch, commit and push commands. Env
 | Port 8501 is already in use | Stop the old server or append `--server.port 8502` to the Streamlit command |
 | No readable HTTP transactions | Check whether the capture contains plaintext HTTP/1.x rather than encrypted HTTPS |
 | Payload-limit warning | Inspect the named connection; its reconstruction is skipped to bound memory |
-| Local model unavailable | Run `setup_ai.bat` or follow `LOCAL_AI.md`; core analysis still works |
+| Local model unavailable | Run `scripts/setup_ai.bat` or follow `docs/LOCAL_AI.md`; core analysis still works |
 | Gemini authentication/quota error | Check your session key and account quota, or choose Local Qwen |
 | Cannot clone private repository | Sign in to the GitHub account granted access; never place a token in the clone URL |
 
@@ -159,4 +168,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for branch, commit and push commands. Env
 - [PCAP specification draft used during development](https://www.ietf.org/archive/id/draft-ietf-opsawg-pcap-06.html) and [PCAPNG specification draft](https://www.ietf.org/archive/id/draft-ietf-opsawg-pcapng-05.html)
 - [Google generateContent API](https://ai.google.dev/api/generate-content) and [structured output](https://ai.google.dev/gemini-api/docs/structured-output)
 
-Model download and license references are in [LOCAL_AI.md](LOCAL_AI.md). These links document implementation sources; the assignment PDF remains the authority for submission requirements.
+Model download and license references are in [LOCAL_AI.md](docs/LOCAL_AI.md). These links document implementation sources; the assignment PDF remains the authority for submission requirements.

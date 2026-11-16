@@ -79,7 +79,7 @@ There are four requests to `example.test` in one connection. The overview sample
 
 ## Scope and limitations
 
-- Supports PCAP and PCAPNG, including multiple PCAPNG interfaces, sections and timestamp resolutions. File signatures and structure are validated. Limits: **100 MiB** and **250,000 packets**; oversized captures are rejected.
+- Supports PCAP and PCAPNG, including multiple PCAPNG interfaces, sections and timestamp resolutions. File signatures and structure are validated. Limits: **100 MiB** and **250,000 packets**; oversized captures are rejected .
 - Packet/frame numbers always refer to the original file. Times are UTC. Capture duration is the difference between minimum and maximum available packet timestamps. Untimed packets remain counted.
 - Volume uses original recorded wire lengths, including headers. Each packet has one primary protocol classification. This differs from Wireshark Protocol Hierarchy, which counts multiple layers.
 - HTTP/1.x reconstruction supports segmentation, retransmissions, out-of-order packets, persistent connections, pipelining and chunked bodies. Gaps, conflicting bytes and incomplete messages are surfaced. Limits are 4 MiB per direction, 32 MiB total retained TCP payload and 10,000 HTTP entries.

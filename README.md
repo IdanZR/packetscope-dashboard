@@ -18,11 +18,13 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-This repository is private: cloning requires access through your own GitHub account. If using the source ZIP, extract it and open PowerShell inside `traffic_dashboard` instead of running the first two commands. With Python 3.13, replace `-3.12` with `-3.13`; if `py` is unavailable, use `python`.
+Run each command separately and wait for it to finish before entering the next. Copy only the commands, without terminal prompts such as `PS C:\...>` or `>>`. The first installation can take several minutes; pressing Ctrl+C stops it.
+
+If access is restricted, cloning requires an authorized GitHub account. If using the source ZIP, extract it and open PowerShell inside `traffic_dashboard` instead of running the first two commands. With Python 3.13, replace `-3.12` with `-3.13`; if `py` is unavailable, use `python`.
 
 Open **http://127.0.0.1:8501**. Stop the server with **Ctrl+C**. No PowerShell activation or Execution Policy change is required.
 
-For a shortcut, run **`start.bat`** from the extracted/cloned directory. It creates `.venv` and installs core dependencies on the first run. If you already created an empty `.venv`, install `requirements.txt` manually before using the shortcut.
+For a shortcut, run **`start.bat`** from the extracted/cloned directory. It creates `.venv` if needed and checks/installs core dependencies before launching, including when an earlier installation was interrupted. Already satisfied packages are reused; this does not request dependency upgrades.
 
 ### Optional AI setup
 
@@ -154,12 +156,27 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for branch, commit and push commands
 |---|---|
 | `py` or `python` not found | Install Python 3.12/3.13, reopen the terminal and verify `python --version` |
 | Missing `streamlit` or another dependency | Run the dependency installation using the same `.venv` interpreter as the server |
+| `KeyboardInterrupt` while running pip | The process was interrupted. Rerun the installation and let it finish; see the recovery steps below |
 | Port 8501 is already in use | Stop the old server or append `--server.port 8502` to the Streamlit command |
 | No readable HTTP transactions | Check whether the capture contains plaintext HTTP/1.x rather than encrypted HTTPS |
 | Payload-limit warning | Inspect the named connection; its reconstruction is skipped to bound memory |
 | Local model unavailable | Run `scripts/setup_ai.bat` or follow `docs/LOCAL_AI.md`; core analysis still works |
 | Gemini authentication/quota error | Check your session key and account quota, or choose Local Qwen |
 | Cannot clone private repository | Sign in to the GitHub account granted access; never place a token in the clone URL |
+
+### Resume an interrupted installation on Windows
+
+`KeyboardInterrupt` indicates an interruption (normally Ctrl+C), not a package compatibility error. The traceback alone does not show why the interruption was sent. From the directory containing `requirements.txt`, run each line separately:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip --version
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m streamlit run app.py
+```
+
+Wait until installation finishes and the PowerShell prompt returns before launching Streamlit. There is no need to remove `.venv` just because an installation was interrupted. If the first command instead reports that pip is missing, bootstrap it with `.\.venv\Scripts\python.exe -m ensurepip --upgrade`, then retry the installation.
+
+References: [Python KeyboardInterrupt](https://docs.python.org/3.12/library/exceptions.html#KeyboardInterrupt) and [pip installation / ensurepip](https://pip.pypa.io/en/stable/installation/).
 
 ## Main technical sources
 
